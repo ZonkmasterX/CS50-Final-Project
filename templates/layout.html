@@ -12,10 +12,50 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
-    <title>TITLE</title>
+    <title>TV/Movie Recs: {% block title %}{% endblock %}</title>
   </head>
+
   <body>
-    NAVBAR
-    CONTENT
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark border">
+      <!-- Navbar content -->
+      <a class="navbar-brand" href="/">
+        <img src="IMAGE SOURCE" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+        TV/Movie Recs
+      </a>
+      <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbar">
+        {% if session.user_id %}
+        <!-- CHANGE LINKS; THESE ARE COPIED FROM CS50 -->
+          <ul class="navbar-nav mr-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="/quote">Quote</a></li>
+            <li class="nav-item"><a class="nav-link" href="/buy">Buy</a></li>
+            <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
+            <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+          </ul>
+          <ul class="navbar-nav ml-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+          </ul>
+        {% else %}
+          <ul class="navbar-nav ml-auto mt-2">
+              <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+              <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+          </ul>
+        {% endif %}
+      </div>
+    </nav>
+
+    <main class="container p-5">
+      {% block main %}{% endblock %}
+    </main>
+
+    <footer class="small text-center text-muted">
+            Data provided for free by <a href="https://developers.themoviedb.org/3/getting-started/introduction">TMDB</a>. View <a href="https://www.themoviedb.org/settings/api/new?type=developer">TMDB’s Terms of Use</a>.
+    </footer>
+
   </body>
+
 </html>
