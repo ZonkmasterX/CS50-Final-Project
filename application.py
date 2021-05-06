@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-# In Finance there's "from tempfile import mkdtemp" but idk what it does
+from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
@@ -19,6 +19,12 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
+
+# Configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_FILE_DIR"] = mkdtemp()
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 # Connect to sqlite3 database
 # From: https://realpython.com/python-sql-libraries/
@@ -76,7 +82,7 @@ def login():
             return apology("must provide username", 403)
 
         # Ensure password was submitted
-        elif not request.form.get("password"):
+        if not request.form.get("password"):
             return apology("must provide password", 403)
 
         # Query database for username
