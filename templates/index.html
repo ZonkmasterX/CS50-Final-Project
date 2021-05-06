@@ -26,23 +26,80 @@
       document.getElementById("moviescheck").oninput = function() {
         if (this.checked) {
           document.getElementById("moviepreferences").style.display = "block"
+          if (document.getElementById("tvcheck").checked) {
+            document.getElementById("recommend").disabled = false
+            document.getElementById("recommend").value = "Recommend Movies and Shows"
+          }
+          else {
+            document.getElementById("recommend").disabled = false
+            document.getElementById("recommend").value = "Recommend Movies"
+          }
         }
         else {
           document.getElementById("moviepreferences").style.display = "none"
+          if (document.getElementById("tvcheck").checked) {
+            document.getElementById("recommend").disabled = false
+            document.getElementById("recommend").value = "Recommend Shows"
+          }
+          else {
+            document.getElementById("recommend").disabled = true
+            document.getElementById("recommend").value = "Select a Category First"
+          }
         }
       }
 
       document.getElementById("tvcheck").oninput = function() {
         if (this.checked) {
           document.getElementById("tvpreferences").style.display = "block"
+          if (document.getElementById("moviescheck").checked) {
+            document.getElementById("recommend").disabled = false
+            document.getElementById("recommend").value = "Recommend Movies and Shows"
+          }
+          else {
+            document.getElementById("recommend").disabled = false
+            document.getElementById("recommend").value = "Recommend Shows"
+          }
         }
         else {
           document.getElementById("tvpreferences").style.display = "none"
+          if (document.getElementById("moviescheck").checked) {
+            document.getElementById("recommend").disabled = false
+            document.getElementById("recommend").value = "Recommend Movies"
+          }
+          else {
+            document.getElementById("recommend").disabled = true
+            document.getElementById("recommend").value = "Select a Category First"
+          }
         }
       }
     }
 
+    function recommend() {
+      // load all the relevant variables (Incomplete)
+      var criticvalue = document.getElementById("criticvalue").value
+      var uservalue = document.getElementById("uservalue").value
+      var lengthvalue = document.getElementById("lengthvalue").value
+      var moviescheck = document.getElementById("moviescheck").checked
+      var tvcheck = document.getElementById("tvcheck").checked
+
+      if (moviescheck) {
+        var preferredlength = document.getElementById("preferredlength").value
+
+        // handle ratings
+        var selectedRatings = {}
+        var ratings = document.querySelectorAll(".rating")
+        for (var i = 0, n = ratings.length; i < n; i++) {
+          selectedRatings[ratings[i].value] = ratings[i].checked
+        }
+      }
+
+      // TODO: do some sql stuff
+      // TODO: do the fancy math
+      // TODO: render the cells of the table
+    }
+
     document.addEventListener("DOMContentLoaded", loadinputs)
+
   </script>
   <div class="inputs">
     <h3>How much do you value the following things?</h3>
@@ -68,21 +125,26 @@
 
       Rating:
         <label for="g"> G </label>
-        <input type="checkbox" id="g" name="g" value="G">
+        <input class="rating" type="checkbox" id="g" name="g" value="G">
 
         <label for="pg"> PG </label>
-        <input type="checkbox" id="pg" name="pg" value="PG">
+        <input class="rating" type="checkbox" id="pg" name="pg" value="PG">
 
         <label for="pg-13"> PG-13 </label>
-        <input type="checkbox" id="pg-13" name="pg-13" value="PG-13">
+        <input class="rating" type="checkbox" id="pg-13" name="pg-13" value="PG-13">
 
-        <label for="g"> R</label>
-        <input type="checkbox" id="r" name="r" value="R">
+        <label for="r"> R</label>
+        <input class="rating" type="checkbox" id="r" name="r" value="R">
       </div>
 
     <div id="tvpreferences" style="display:none;">
       <h4>TV Show Preferences</h4>
     </div>
+
+    <br>
+    <input id="recommend" type="button" disabled value="Select a Category First" onclick="recommend()">
+
+
 
   </div>
 {% endblock %}
