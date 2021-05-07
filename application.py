@@ -3,8 +3,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-import sqlite3
-from sqlite3 import Error
+from cs50 import SQL
 
 # Configure application
 app = Flask(__name__)
@@ -26,16 +25,8 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Connect to sqlite3 database
-# From: https://realpython.com/python-sql-libraries/
-def create_connection():
-    connection = None
-    try:
-        connection = sqlite3.connect('project.db')
-        print("Connection to SQLite DB successful")
-    except Error as e:
-        print(f"The error '{e}' occurred")
-    return connection
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///project.db")
 
 def login_required(f):
     # Decorate routes to require login.
@@ -67,7 +58,7 @@ def apology(message, code=400):
 def index():
     return render_template("index.html")
 
-# INTERNAL SERVER ERROR (ERROR IN CODE HERE)
+
 @app.route("/login.html", methods=["GET", "POST"])
 def login():
     """Log user in"""
@@ -103,7 +94,6 @@ def login():
         return render_template("login.html")
 
 
-# PAGE NOT FOUND FOR SOME REASON
 @app.route("/register.html", methods=["GET", "POST"])
 def register():
     """Register user"""
@@ -145,8 +135,20 @@ def register():
         userID = db.execute("SELECT id FROM users WHERE hash = ?", hashed)
         userID = userID[0]["id"]
 
-        # Redirect user to login form
+        # Redirect user to home page
         return redirect("/")
 
     else:
         return render_template("register.html")
+
+
+# "The requested URL was not found on the server."
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to home page
+    return redirect("/")
