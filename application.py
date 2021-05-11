@@ -142,7 +142,6 @@ def register():
         return render_template("register.html")
 
 
-# "The requested URL was not found on the server."
 @app.route("/logout")
 def logout():
     """Log user out"""
