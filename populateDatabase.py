@@ -43,6 +43,8 @@ def lookup(IMDBID):
         for i in range(len(data["genres"])):
             genres.append(data["genres"][i]["name"])
         gString = ", ".join(genres)
+        if gString == "":
+            gString = "NA"
 
         return {
             "imdb_id": data["imdb_id"],
@@ -50,17 +52,14 @@ def lookup(IMDBID):
             "title": data["title"],
             "release_year": int(data["release_date"][0:4]),
             "runtime": data["runtime"],
+            "popularity": data["popularity"],
             "vote_average": data["vote_average"],
             "vote_count": data["vote_count"],
             "rating": rating,
             "genres": gString
         }
-    except (KeyError):
-        return "KeyError"
-    except (TypeError):
-        return "TypeError"
-    except (ValueError):
-        return "ValueError"
+    except (KeyError, TypeError, ValueError):
+        return None
 
 
 def increment(ID):
@@ -71,20 +70,38 @@ def increment(ID):
     return newID
 
 
-def populate():
+def populate(number):
     """populate database"""
 
-    ID = "tt1000000"
-    for i in range(100):
-        data = lookup(ID)
-        if data != None:
-            try:
-                # Input data into database
-                db.execute("INSERT INTO movie_data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", data["imdb_id"], data["tmdb_id"], data["title"], data["release_year"], data["runtime"], data["vote_average"], data["vote_count"], data["genres"], data["rating"])
-            except (ValueError):
-                continue
+    # 0499243
+    # next is tt0463291
+    ID = "tt0458290"
+    for i in range(number):
+
+        # next ID
         ID = increment(ID)
 
+        # lookup movie
+        data = lookup(ID)
 
-#print(lookup("tt1000093"))
-populate()
+        # ensure movie is in TMDB database
+        if data != None:
+
+            # Ensure no values are None
+            for key, value in data.items():
+                if data[key] is None:
+                    data[key] = 1
+
+            # disregard movies with  NC-17 or X ratings
+            if data["rating"] == "X" or data["rating"] == "NC-17":
+                continue
+
+            # Input data into database
+            try:
+                db.execute("INSERT INTO movie_data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data["imdb_id"], data["tmdb_id"], data["title"], data["release_year"], data["runtime"], data["popularity"], data["vote_average"], data["vote_count"], data["genres"], data["rating"])
+            except (ValueError):
+                continue
+
+
+#print(lookup("tt0499246"))
+populate(5000)
