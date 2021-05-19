@@ -23,62 +23,67 @@
       document.getElementById("lengthvalue").innerHTML = this.value;
       }
 
+      document.getElementById("genreslider").oninput = function() {
+      document.getElementById("genrevalue").innerHTML = this.value;
+      }
+
       document.getElementById("preferredlength").oninput = function() {
       document.getElementById("plengthvalue").innerHTML = this.value;
       }
-
-      //functionality for movies checkmark
-      document.getElementById("moviescheck").oninput = function() {
-        if (this.checked) {
-          document.getElementById("moviepreferences").style.display = "block"
-          if (document.getElementById("tvcheck").checked) {
-            document.getElementById("recommend").disabled = false
-            document.getElementById("recommend").value = "Recommend Movies and Shows"
-          }
-          else {
-            document.getElementById("recommend").disabled = false
-            document.getElementById("recommend").value = "Recommend Movies"
-          }
-        }
-        else {
-          document.getElementById("moviepreferences").style.display = "none"
-          if (document.getElementById("tvcheck").checked) {
-            document.getElementById("recommend").disabled = false
-            document.getElementById("recommend").value = "Recommend Shows"
-          }
-          else {
-            document.getElementById("recommend").disabled = true
-            document.getElementById("recommend").value = "Select a Category First"
-          }
-        }
-      }
-
-      //functionality for tv shows checkmark
-      document.getElementById("tvcheck").oninput = function() {
-        if (this.checked) {
-          document.getElementById("tvpreferences").style.display = "block"
-          if (document.getElementById("moviescheck").checked) {
-            document.getElementById("recommend").disabled = false
-            document.getElementById("recommend").value = "Recommend Movies and Shows"
-          }
-          else {
-            document.getElementById("recommend").disabled = false
-            document.getElementById("recommend").value = "Recommend Shows"
-          }
-        }
-        else {
-          document.getElementById("tvpreferences").style.display = "none"
-          if (document.getElementById("moviescheck").checked) {
-            document.getElementById("recommend").disabled = false
-            document.getElementById("recommend").value = "Recommend Movies"
-          }
-          else {
-            document.getElementById("recommend").disabled = true
-            document.getElementById("recommend").value = "Select a Category First"
-          }
-        }
-      }
     }
+
+    //   //functionality for movies checkmark
+    //   document.getElementById("moviescheck").oninput = function() {
+    //     if (this.checked) {
+    //       document.getElementById("moviepreferences").style.display = "block"
+    //       if (document.getElementById("tvcheck").checked) {
+    //         document.getElementById("recommend").disabled = false
+    //         document.getElementById("recommend").value = "Recommend Movies and Shows"
+    //       }
+    //       else {
+    //         document.getElementById("recommend").disabled = false
+    //         document.getElementById("recommend").value = "Recommend Movies"
+    //       }
+    //     }
+    //     else {
+    //       document.getElementById("moviepreferences").style.display = "none"
+    //       if (document.getElementById("tvcheck").checked) {
+    //         document.getElementById("recommend").disabled = false
+    //         document.getElementById("recommend").value = "Recommend Shows"
+    //       }
+    //       else {
+    //         document.getElementById("recommend").disabled = true
+    //         document.getElementById("recommend").value = "Select a Category First"
+    //       }
+    //     }
+    //   }
+    //
+    //   //functionality for tv shows checkmark
+    //   document.getElementById("tvcheck").oninput = function() {
+    //     if (this.checked) {
+    //       document.getElementById("tvpreferences").style.display = "block"
+    //       if (document.getElementById("moviescheck").checked) {
+    //         document.getElementById("recommend").disabled = false
+    //         document.getElementById("recommend").value = "Recommend Movies and Shows"
+    //       }
+    //       else {
+    //         document.getElementById("recommend").disabled = false
+    //         document.getElementById("recommend").value = "Recommend Shows"
+    //       }
+    //     }
+    //     else {
+    //       document.getElementById("tvpreferences").style.display = "none"
+    //       if (document.getElementById("moviescheck").checked) {
+    //         document.getElementById("recommend").disabled = false
+    //         document.getElementById("recommend").value = "Recommend Movies"
+    //       }
+    //       else {
+    //         document.getElementById("recommend").disabled = true
+    //         document.getElementById("recommend").value = "Select a Category First"
+    //       }
+    //     }
+    //   }
+    // }
 
     //handle invalid year inputs
     //this was way too hard ew
@@ -128,29 +133,32 @@
     }
 
     function recommend() {
-      // load all the relevant variables (Incomplete)
-      var popularityvalue = document.getElementById("popularityvalue").value
-      var uservalue = document.getElementById("uservalue").value
-      var lengthvalue = document.getElementById("lengthvalue").value
-      var moviescheck = document.getElementById("moviescheck").checked
-      var tvcheck = document.getElementById("tvcheck").checked
+      //Dictionary of relevant values to export
+      var info = {}
 
-      if (moviescheck) {
-        var preferredlength = document.getElementById("preferredlength").value
+      info["uservalue"] = document.getElementById("userscore").value
+      info["popularityvalue"] = document.getElementById("popularity").value
+      info["lengthvalue"] = document.getElementById("length").value
+      info["genrevalue"] = document.getElementById("genreslider").value
 
-        // handle ratings
-        var selectedRatings = {}
-        var ratings = document.querySelectorAll(".rating")
-        for (var i = 0, n = ratings.length; i < n; i++) {
-          selectedRatings[ratings[i].value] = ratings[i].checked
-        }
+      info["preferredlength"] = document.getElementById("preferredlength").value
 
-        //handle genres
-        var selectedGenres = {}
-        var genres = document.querySelectorAll(".genre")
-        for (var i = 0, n = genres.length; i < n; i++) {
-          selectedGenres[genres[i].value] = genres[i].checked
-        }
+      //handle release years
+      info["minyear"] = parseInt(document.getElementById("minyear").value, 10)
+      info["maxyear"] = parseInt(document.getElementById("maxyear").value, 10)
+
+      // handle ratings
+      info["ratings"] = {}
+      var ratings = document.querySelectorAll(".rating")
+      for (var i = 0, n = ratings.length; i < n; i++) {
+        info["ratings"][ratings[i].value] = ratings[i].checked
+      }
+
+      //handle genres
+      info["genres"] = {}
+      var genres = document.querySelectorAll(".genre")
+      for (var i = 0, n = genres.length; i < n; i++) {
+        info["genres"][genres[i].value] = genres[i].checked
       }
 
       // Get the database stuff
@@ -171,7 +179,7 @@
         };
 
       //send the values (currently only ratings for simplicity but can be lots of stuff)
-      xhr.send(JSON.stringify(selectedRatings))
+      xhr.send(JSON.stringify(info))
 
 
       //xhr.send("ratings=" + JSON.stringify(selectedRatings))
@@ -187,20 +195,21 @@
     <h3>How much do you value the following things?</h3>
     <p>0 means you do not care at all and 10 means you care a lot<p>
 
-    Popularity <input type="range" min="0" max="10" value="0" class="slider" id="popularity"> <span id="popularityvalue">0</span>
     User Score <input type="range" min="0" max="10" value="0" class="slider" id="userscore"> <span id="uservalue">0</span>
+    Current Popularity <input type="range" min="0" max="10" value="0" class="slider" id="popularity"> <span id="popularityvalue">0</span>
     Length <input type="range" min="0" max="10" value="0" class="slider" id="length"> <span id="lengthvalue">0</span>
+    Genre <input type="range" min="0" max="10" value="0" class="slider" id="genreslider"> <span id="genrevalue">0</span>
 
-    <h3>What are you looking for?</h3>
-      <label for="moviescheck"> Movies </label>
+    <!-- <h3>What are you looking for?</h3> -->
+      <!-- <label for="moviescheck"> Movies </label>
       <input type="checkbox" id="moviescheck" name="moviescheck" value="MoviesCheck">
 
       <label for="tvcheck"> TV Shows </label>
-      <input type="checkbox" id="tvcheck" name="tvcheck" value="TVCheck">
+      <input type="checkbox" id="tvcheck" name="tvcheck" value="TVCheck"> -->
 
-    <div id="moviepreferences" style="display:none;">
+    <div id="moviepreferences">
 
-      <h4>Movie Preferences</h4>
+      <h3>Other Preferences</h3>
 
       Preferred Length <input type="range" min="0" max="240" value="120" class="slider" id="preferredlength"> <span id="plengthvalue">120</span> minutes
       <br>
@@ -278,13 +287,8 @@
           <label for="western"> Western </label>
           <input class="genre" type="checkbox" id="western" name="western" value="Western">
       </div>
-
-    <div id="tvpreferences" style="display:none;">
-      <h4>TV Show Preferences</h4>
-    </div>
-
     <br>
-    <input id="recommend" type="button" disabled value="Select a Category First" onclick="recommend()">
+    <input id="recommend" type="button" value="Recommend Movies" onclick="recommend()">
 
 
 

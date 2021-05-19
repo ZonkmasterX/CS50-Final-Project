@@ -5,6 +5,7 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 import json
+import algorithm
 
 # Configure application
 app = Flask(__name__)
@@ -59,11 +60,13 @@ def apology(message, code=400):
 def index():
     if request.method == "POST":
         # Get the data and turn it into a dictionary
-        ratings = request.get_json()
+        info = request.get_json()
 
-        if ratings:
+        if info:
+            # Do the math
+            algorithm.makeithappen(info)
             # Send whatever we need to send back as json (currently just sends back what we got)
-            return json.dumps(ratings)
+            return json.dumps(info)
         else:
             return apology("SOME ERROR MESSAGE IDK")
     else:
