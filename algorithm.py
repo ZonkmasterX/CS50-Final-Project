@@ -1,6 +1,10 @@
 # IMPORTS
 import math #https://docs.python.org/3/library/math.html
 import numpy as np #https://numpy.org
+from cs50 import SQL
+
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///project.db")
 
 
 # CONSTANT VARIABLES
@@ -20,7 +24,7 @@ MAXGENREADDITION = 0.05
 
 # FUNCTIONS
 def matrixCalc():
-    #constructs a function for scaling rating based on an input point
+    """constructs a function for scaling rating based on an input point"""
     matrix = np.array([[1, 1, 1, 1],[6, 5, 4, 3],[30, 20, 12, 6],[POINTX^6, POINTX^5, POINTX^4, POINTX^3]])
     return np.matmul(np.array([[1],[0],[0],[POINTY]]), np.linalg.inv(matrix))
 
@@ -75,19 +79,13 @@ def genresCalc(moviegenres, preferredgenres, genrevalue):
     return genres_mp
 
 
-
-# Recreates movie_scores table
-def redoTable():
-    db.execute("DROP TABLE IF EXISTS movie_scores")
-    db.execute("CREATE TABLE movie_scores (ID INT, imdb_id TEXT, title TEXT, final_score REAL, PRIMARY KEY (ID));"")
-    db.execute("INSERT INTO movie_scores (imdb_id, title) SELECT imdb_id, title FROM movie_data")
-
-
-# Generates final scores
 def makeithappen(info):
-    redoTable()
+    """Generates final scores"""
+
     # Count how many movies there are in the database
     movieCount = db.execute("SELECT COUNT(*) FROM movie_data")
+    # Reset final scores
+    db.execute("UPDATE movie_data SET final_score = 0")
     # Count the mean score (i.e. what the typical vote a user submits on a movie is)
     meanScore = db.execute("SELECT SUM(vote_average * vote_count) / SUM(vote_average) FROM movie_data")
     #determine coefficients for user score function
@@ -116,4 +114,6 @@ def makeithappen(info):
         final_score = popularity_mp * user_score_mp * length_mp * genres_mp
 
         # Updates movie_scores table
-        db.execute("UPDATE movie_scores SET final_score = ? WHERE ID = ?", final_score, i)
+        db.execute("UPDATE movie_data SET final_score = ? WHERE id = ?", final_score, i)
+
+    # TODO: If any final scores are 0, [DO SOMETHING]

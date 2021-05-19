@@ -75,7 +75,7 @@ def populate(number):
 
     # 0499243
     # next is tt0463291
-    ID = "tt0458290"
+    ID = "tt4209785"
     for i in range(number):
 
         # next ID
@@ -98,10 +98,10 @@ def populate(number):
 
             # Input data into database
             try:
-                db.execute("INSERT INTO movie_data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data["imdb_id"], data["tmdb_id"], data["title"], data["release_year"], data["runtime"], data["popularity"], data["vote_average"], data["vote_count"], data["genres"], data["rating"])
+                db.execute("INSERT INTO movie_data (imdb_id, tmdb_id, title, release_year, runtime, popularity, vote_average, vote_count, genres, rating) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data["imdb_id"], data["tmdb_id"], data["title"], data["release_year"], data["runtime"], data["popularity"], data["vote_average"], data["vote_count"], data["genres"], data["rating"])
             except (ValueError):
                 continue
 
 
-#print(lookup("tt0499246"))
-populate(5000)
+#print(lookup("tt4209788"))
+populate(10)
