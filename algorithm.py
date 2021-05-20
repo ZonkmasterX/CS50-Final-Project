@@ -29,7 +29,17 @@ def matrixCalc():
     return np.matmul(np.array([[1],[0],[0],[POINTY]]), np.linalg.inv(matrix))
 
 
-def popularityCalc():
+def popularityCalc(popularity, popularityvalue, medianPop, maxPop):
+    # calculare coefficients
+    A = (maxPop - medianPop) / (maxPop - 2 * medianPop)
+    B = (A - 1) * maxPop
+
+    # scale it by the function
+    unscaled_mp = A * popularity / (popularity + B)
+
+    # scale it by your preferences
+    popularity_mp = (1 - uservalue * MINDEDUCTIONS[0]) + popularityvalue * MINDEDUCTIONS[0] * unscaled_mp
+
     return popularity_mp
 
 
@@ -40,7 +50,7 @@ def user_scoreCalc(rating, votes, meanVotes, uservalue, coefficients): #includes
     #scale it by the function
     unscaled_mp = adjustedRating^3 * (coefficients[0] * adjustedRating^3 + coefficients[1] * adjustedRating^2 + coefficients[2] * adjustedRating + coefficients[3])
 
-    #scale it by your Preferences
+    #scale it by your preferences
     user_score_mp = (1 - uservalue * MINDEDUCTIONS[1]) + uservalue * MINDEDUCTIONS[1] * unscaled_mp
 
     return user_score_mp
@@ -88,6 +98,9 @@ def makeithappen(info):
     db.execute("UPDATE movie_data SET final_score = 0")
     # Count the mean score (i.e. what the typical vote a user submits on a movie is)
     meanScore = db.execute("SELECT SUM(vote_average * vote_count) / SUM(vote_average) FROM movie_data")
+    #Calculate the median and maximum popularity
+    medianPop = db.execute("SELECT MEDIAN(popularity) FROM movie_data")
+    maxPop = db.execute("SELECT MAX(popularity) FROM movie_data")
     #determine coefficients for user score function
     coefficients = matrixCalc()
 
@@ -101,12 +114,20 @@ def makeithappen(info):
     for i in range(movieCount):
         moviedata = db.execute("SELECT release_year, runtime, popularity, vote_average, vote_count, rating, genres FROM movie_data where ID = ?", i)[0]
 
-
-        # TODO: Filter out by release year and MPAA rating
+        # Filter out by release year and MPAA rating
+        if isdigit(info["minyear"]):
+            if moviedata["release_year"] <= int(info["minyear"]):
+                continue
+        if isdigit(info["maxyear"]):
+            if moviedata["release_year"] >= int(info["maxyear"]):
+                continue
+        # MAKE SURE THAT MOVIEDATA RATINGS AND INFO RATINGS ARE IN THE SAME FORMAT!!!
+        if info["rating"][moviedata["rating"]] == False:
+            continue
 
 
         # multiplies all multipliers together to find final score
-        popularity_mp = popularityCalc()
+        popularity_mp = popularityCalc(moviedata["popularity"], int(info["popularityvalue"]), medianPop, maxPop)
         user_score_mp = user_scoreCalc(moviedata["vote_average"], moviedata["vote_count"], meanScore, preferences["uservalue"], coefficients)
         length_mp = lengthCalc(moviedata["runtime"], preferences["lengthvalue"], int(info["preferredlength"]))
         genres_mp = genresCalc(moviedata["genres"], info["genres"], preferences["genrevalue"])
