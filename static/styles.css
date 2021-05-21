@@ -3,3 +3,30 @@
   font-style: italic;
   color: #6d6d6d;
 }
+
+table {
+  border-collapse: separate;
+  width: 70%;
+  border: solid black 1.5px;
+  border-radius: 4px;
+}
+
+td, th {
+  border-left:solid black 1px;
+  border-top:solid black 1px;
+  text-align: center
+}
+
+th {
+  background-color: #e9ecef;
+  border-top: none;
+}
+
+td:first-child, th:first-child {
+  border-left: none;
+}
+
+.percentmatch {
+  color: #d04b4b;
+  margin-left: -2em;
+}

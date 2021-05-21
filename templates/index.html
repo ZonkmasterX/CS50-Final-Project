@@ -30,6 +30,10 @@
       document.getElementById("preferredlength").oninput = function() {
       document.getElementById("plengthvalue").innerHTML = this.value;
       }
+
+      document.getElementById("amountOfRecs").oninput = function() {
+      document.getElementById("precsvalue").innerHTML = this.value;
+      }
     }
 
     //   //functionality for movies checkmark
@@ -140,7 +144,6 @@
       info["popularityvalue"] = document.getElementById("popularity").value
       info["lengthvalue"] = document.getElementById("length").value
       info["genrevalue"] = document.getElementById("genreslider").value
-
       info["preferredlength"] = document.getElementById("preferredlength").value
 
       //handle release years
@@ -160,6 +163,8 @@
       for (var i = 0, n = genres.length; i < n; i++) {
         info["genres"][genres[i].value] = genres[i].checked
       }
+
+      info["recsvalue"] = document.getElementById("amountOfRecs").value
 
       // Get the database stuff
       var xhr = new XMLHttpRequest();
@@ -191,9 +196,12 @@
     document.addEventListener("DOMContentLoaded", loadinputs)
 
   </script>
+
   <div class="jumbotron" style="text-align:center">
     <h1>Welcome!</h1>
   </div>
+
+  <!-- Preferences -->
   <div class="inputs">
     <h3>When searching for a movie, how much do you value the following things?</h3>
     <p>0 means you do not care at all and 10 means you care a lot<p>
@@ -298,9 +306,34 @@
           <input class="genre" type="checkbox" id="western" name="western" value="Western">
       </div>
     <br>
+
+    <p style="font-weight: bold;">How many recommendations would you like?</p>
+    <div style="margin-top: -0.5em">
+      <input type="range" min="1" max="100" value="10" class="slider" id="amountOfRecs">
+      <span id="precsvalue">10</span> recommendations
+    </div>
+    <br>
+
     <input id="recommend" type="button" value="Recommend Movies" onclick="recommend()">
-
-
+    <br>
+    <br>
 
   </div>
+
+  <!-- Movie recommendations -->
+  <div class="results" style="display: inline">
+    <!-- table with recommendations -->
+    <table>
+      <tr>
+        <th>Title</th>
+        <th>Percent match</th>
+      </tr>
+      <tr>
+        <td>The Lion, The Witch, and The Wardrobe</td>
+        <td class="percentmatch">Test 2</td>
+      </tr>
+    </table>
+
+  </div>
+
 {% endblock %}
