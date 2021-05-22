@@ -9,7 +9,7 @@ db = SQL("sqlite:///project.db")
 
 # CONSTANT VARIABLES
 RELPREFERENCEWEIGHT = 2
-MINDEDUCTIONS = [0.5, 0.5, 0.5, 0.5]
+MAXDEDUCTIONS = [0.5, 0.5, 0.5, 0.5]
 VOTEWEIGHT = 5
 POINTX = 0.5
 POINTY = 0.5
@@ -38,20 +38,20 @@ def popularityCalc(popularity, popularityvalue, medianPop, maxPop):
     unscaled_mp = A * popularity / (popularity + B)
 
     # scale it by your preferences
-    popularity_mp = (1 - uservalue * MINDEDUCTIONS[0]) + popularityvalue * MINDEDUCTIONS[0] * unscaled_mp
+    popularity_mp = (1 - uservalue * MAXDEDUCTIONS[0]) + popularityvalue * MAXDEDUCTIONS[0] * unscaled_mp
 
     return popularity_mp
 
 
 def user_scoreCalc(rating, votes, meanVotes, uservalue, coefficients): #includes adjustment for vote count
     #adjust low vote count movies
-    adjustedRating = (VOTEWEIGHT * meanVotes + votes * rating) / (VOTEWEIGHT + votes)
+    adjustedRating = (VOTEWEIGHT * meanVotes + votes * rating) / (10 * (VOTEWEIGHT + votes))
 
-    #scale it by the function
+    #scale it by the function from matrixCalc
     unscaled_mp = adjustedRating^3 * (coefficients[0] * adjustedRating^3 + coefficients[1] * adjustedRating^2 + coefficients[2] * adjustedRating + coefficients[3])
 
     #scale it by your preferences
-    user_score_mp = (1 - uservalue * MINDEDUCTIONS[1]) + uservalue * MINDEDUCTIONS[1] * unscaled_mp
+    user_score_mp = (1 - uservalue * MAXDEDUCTIONS[1]) + uservalue * MAXDEDUCTIONS[1] * unscaled_mp
 
     return user_score_mp
 
@@ -68,7 +68,7 @@ def lengthCalc(runtime, lengthvalue, preferredlength):
         #I don't want to type lengthdifference a million times here
         x = lengthdifference
         #scale multiplier by special function
-        length_mp = (1 - MINDEDUCTIONS[2]) + MINDEDUCTIONS[2] * (x^2 + 1) / ((x^4 + x^3 + x^2 + x + 1) * (x^4 - x^3 + x^2 - x + 1))
+        length_mp = (1 - MAXDEDUCTIONS[2]) + MAXDEDUCTIONS[2] * (x^2 + 1) / ((x^4 + x^3 + x^2 + x + 1) * (x^4 - x^3 + x^2 - x + 1))
 
         return length_mp
 
@@ -97,18 +97,22 @@ def makeithappen(info):
     # Reset final scores
     db.execute("UPDATE movie_data SET final_score = 0")
     # Count the mean score (i.e. what the typical vote a user submits on a movie is)
-    meanScore = db.execute("SELECT SUM(vote_average * vote_count) / SUM(vote_average) FROM movie_data")
+    meanScore = db.execute("SELECT SUM(vote_average * vote_count) / SUM(vote_count) FROM movie_data")
     #Calculate the median and maximum popularity
+
+
+    # MEDIAN FUNCTION DOES NOT EXIST https://stackoverflow.com/questions/15763965/how-can-i-calculate-the-median-of-values-in-sqlite
     medianPop = db.execute("SELECT MEDIAN(popularity) FROM movie_data")
     maxPop = db.execute("SELECT MAX(popularity) FROM movie_data")
-    #determine coefficients for user score function
-    coefficients = matrixCalc()
+    # determine coefficients for user score function
+    matrix = matrixCalc()
+    coefficients = [matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0]]
 
     #adjust preferences
     preferences = {}
     psum = int(info["popularityvalue"]) + int(info["uservalue"]) + int(info["lengthvalue"])+ int(info["genrevalue"])
     for category in ["popularityvalue", "uservalue", "lengthvalue", "genrevalue"]:
-        preferences[category] = (int(info[category]) / 10) + (int(info[category])/psum)
+        preferences[category] = ((int(info[category]) / 10) + RELPREFERENCEWEIGHT * (int(info[category])/psum))/ (RELPREFERENCEWEIGHT + 1)
 
     # iterates over each movie
     for i in range(movieCount):
@@ -121,7 +125,7 @@ def makeithappen(info):
         if isdigit(info["maxyear"]):
             if moviedata["release_year"] >= int(info["maxyear"]):
                 continue
-        # MAKE SURE THAT MOVIEDATA RATINGS AND INFO RATINGS ARE IN THE SAME FORMAT!!!
+        # MAKE SURE THAT MOVIEDATA RATINGS AND INFO RATINGS ARE IN THE SAME FORMAT!!! G, PG, PG-13, R
         if info["rating"][moviedata["rating"]] == False:
             continue
 
@@ -130,11 +134,14 @@ def makeithappen(info):
         popularity_mp = popularityCalc(moviedata["popularity"], int(info["popularityvalue"]), medianPop, maxPop)
         user_score_mp = user_scoreCalc(moviedata["vote_average"], moviedata["vote_count"], meanScore, preferences["uservalue"], coefficients)
         length_mp = lengthCalc(moviedata["runtime"], preferences["lengthvalue"], int(info["preferredlength"]))
+
+
+        # TURN GENRES COMMA LIST INTO PYTHON LIST, ALSO MAKE SURE OF FORMATTING
         genres_mp = genresCalc(moviedata["genres"], info["genres"], preferences["genrevalue"])
 
         final_score = popularity_mp * user_score_mp * length_mp * genres_mp
+        if final_score > 1:
+            final_score = 1
 
         # Updates movie_scores table
         db.execute("UPDATE movie_data SET final_score = ? WHERE id = ?", final_score, i)
-
-    # TODO: If any final scores are 0, [DO SOMETHING]
