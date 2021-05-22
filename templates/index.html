@@ -176,12 +176,66 @@
         if (xhr.readyState === xhr.DONE) {
           if (xhr.status === 200) {
             //what to do with the data once math/sql stuff is done in python
-            //currently just sends a placeholder to the console so I can see if it's working
             console.log(xhr.response);
-            console.log(xhr.responseText);
+            //console.log(xhr.responseText);
+
+            // CREATES TABLE (https://javascript.plainenglish.io/creating-a-dynamic-html-table-through-javascript-f554fba376cf)
+            const resultsDiv = document.querySelector("div.results") // Find the results div
+            let tableHeaders = ["Title", "Percent match"]
+
+            while (resultsDiv.firstChild) {
+              resultsDiv.removeChild(resultsDiv.firstChild) // Remove all children from results div (if any)
             }
+
+            let resultsTable = document.createElement('table') // Create the table itself
+            resultsTable.className = 'resultsTable'
+
+            let resultsTableHead = document.createElement('thead') // Creates the table header group element
+            resultsTableHead.className = 'resultsTableHead'
+
+            let resultsTableHeaderRow = document.createElement('tr') // Creates the row that will contain the headers
+            resultsTableHeaderRow.className = 'resultsTableHeaderRow'
+
+            // Iterates over all the strings in the tableHeader array and will append the header cells to the table header row
+            tableHeaders.forEach(header => {
+              let resultHeader = document.createElement('th') // Creates the current header cell during a specific iteration
+              resultHeader.innerText = header
+              resultsTableHeaderRow.append(resultHeader) // Appends the current header cell to the header row
+            })
+
+            resultsTableHead.append(resultsTableHeaderRow) // Appends the header row to the table header group element
+            resultsTable.append(resultsTableHead)
+
+            let resultsTableBody = document.createElement('tbody') // Creates the table body group element
+            resultsTableBody.className = "resultsTableBody"
+            resultsTable.append(resultsTableBody) // Appends the table body group element to the table
+
+            resultsDiv.append(resultsTable) // Appends the table to the results div
+
+            console.log("it's working")
+
+            // FORMAT: [{"title": "test", "percent": 0.78}, {ANOTHER DICT}]
+            var results = xhr.response;
+            results = JSON.parse(results)
+
+            results.forEach((element, index) => {
+              const resultsTable = document.querySelector('.resultsTable') // Find the table we created
+
+              let resultsTableBodyRow = document.createElement('tr') // Create the current table row
+              resultsTableBodyRow.className = 'resultsTableBodyRow'
+
+              // Creates the 2 column cells that will be appended to the current table row
+              let resultRanking = document.createElement('td')
+              resultRanking.innerText = index
+              let resultTitle = document.createElement('td')
+              resultTitle.innerText = element.title
+
+              resultsTableBodyRow.append(resultRanking, resultTitle) // Append the 2 cells to the table row
+              resultsTable.append(resultsTableBodyRow) // Append the current row to the scoreboard table body
+            });
           }
-        };
+        }
+      };
 
       //send the values (currently only ratings for simplicity but can be lots of stuff)
       xhr.send(JSON.stringify(info))
@@ -323,6 +377,7 @@
   <!-- Movie recommendations -->
   <div class="results" style="display: inline">
     <!-- table with recommendations -->
+    <p id="test"></p>
     <table>
       <tr>
         <th>Title</th>
