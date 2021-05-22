@@ -65,8 +65,11 @@ def index():
         if info:
             # Do the math
             algorithm.makeithappen(info)
-            # Send whatever we need to send back as json (currently just sends back what we got)
-            return json.dumps(info)
+
+            top_matches = db.execute("SELECT title, final_score FROM movie_data ORDER BY final_score DESC LIMIT ?", info["recsvalue"])
+
+            # Send whatever we need to send back as json
+            return json.dumps(top_matches)
         else:
             return apology("SOME ERROR MESSAGE IDK")
     else:
