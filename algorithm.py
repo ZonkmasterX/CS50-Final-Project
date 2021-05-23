@@ -12,13 +12,13 @@ db = SQL("sqlite:///project.db")
 
 # CONSTANT VARIABLES
 RELPREFERENCEWEIGHT = 2
-MAXDEDUCTIONS = [0.5, 0.5, 0.5, 0.5]
+MAXDEDUCTIONS = [0.4, 0.8, 0.5, 0.5]
 VOTEWEIGHT = 5
 POINTX = 0.5
 POINTY = 0.5
-MINLENGTHDEV = 15
-MAXGENREDEDUCTION = 0.5
-MAXGENREADDITION = 0.05
+MINLENGTHDEV = 20
+MAXGENREDEDUCTION = 0.7
+MAXGENREADDITION = 0.07
 
 # IMPORTED PREFERENCES FROM INDEX.HTML
 
@@ -165,7 +165,8 @@ def makeithappen(info):
             final_score = 1.0
 
         # Debug message
-        #logging.debug(str(popularity_mp) + " " + str(moviedata["popularity"]) + " " + str(preferences["popularityvalue"]))
+        if final_score == 0:
+            logging.debug(str(popularity_mp) + " " + str(user_score_mp) + " " + str(length_mp) + " " + str(genres_mp))
 
         # Updates debug table
         # db.execute("UPDATE debug SET final_score = ?, user_score = ?, user_score_p = ?, user_score_mp = ?, popularity = ? WHERE id = ?", float(final_score), moviedata["vote_average"], int(preferences["uservalue"]), float(user_score_mp), moviedata["popularity"], i)
