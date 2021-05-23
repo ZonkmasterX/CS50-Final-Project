@@ -90,6 +90,8 @@ def genresCalc(moviegenres, preferredgenres, genrevalue):
     #determine multiplier
     if matches == 0:
         genres_mp = 1 - (MAXGENREDEDUCTION * genrevalue)
+    elif matches == len(moviegenres):
+        genres_mp = 1
     else:
         genres_mp = 1 + (MAXGENREADDITION * genrevalue * (matches - 1))
     return genres_mp

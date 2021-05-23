@@ -152,15 +152,35 @@
       // handle ratings
       info["ratings"] = {}
       var ratings = document.querySelectorAll(".rating")
+      var matches = 0
       for (var i = 0, n = ratings.length; i < n; i++) {
         info["ratings"][ratings[i].value] = ratings[i].checked
+        if (info["ratings"][ratings[i].value] == true) {
+          matches += 1 // adds 1 to matches if rating is checked
+        }
+      }
+      // if there are no matches, make it act as if all ratings were checked
+      if (matches == 0) {
+        for (var i = 0, n = ratings.length; i < n; i++) {
+          info["ratings"][ratings[i].value] = true
+        }
       }
 
       //handle genres
       info["genres"] = {}
       var genres = document.querySelectorAll(".genre")
+      matches = 0
       for (var i = 0, n = genres.length; i < n; i++) {
         info["genres"][genres[i].value] = genres[i].checked
+        if (info["genres"][genres[i].value] == true) {
+          matches += 1 // adds 1 to matches if genre is checked
+        }
+      }
+      // if there are no matches, make it act as if all genres were checked
+      if (matches == 0) {
+        for (var i = 0, n = genres.length; i < n; i++) {
+          info["genres"][genres[i].value] = true
+        }
       }
 
       info["recsvalue"] = document.getElementById("amountOfRecs").value
@@ -227,7 +247,7 @@
               // let resultIndex = document.createElement('td')
               // resultIndex.innerText = Number(index) + 1
               let resultTitle = document.createElement('td')
-              resultTitle.innerText = element.title
+              resultTitle.innerHTML = "<a href=https://www.imdb.com/title/" + element.imdb_id + ">" + element.title + "</a>"
               let resultMatch = document.createElement('td')
               resultMatch.className = 'percentmatch'
               resultMatch.innerText = Number((element.final_score * 100).toFixed(2)) + "%"
@@ -282,6 +302,7 @@
       <br>
 
       MPAA Rating:
+      <p class="description" style="margin-bottom: 0.4em">If you wish to select all, do not select any</p>
 
         <label for="g"> G </label>
         <input class="rating" type="checkbox" id="g" name="g" value="G">
@@ -296,7 +317,7 @@
         <input class="rating" type="checkbox" id="r" name="r" value="R">
 
         <h6>Genres:</h6>
-        <p class="description" style="margin: -0.5em 0em 0.2em 0em">Choose at least one</p>
+        <p class="description" style="margin: -0.5em 0em 0.4em 0em">If you wish to select all, do not select any</p>
 
           <label for="action"> Action </label>
           <input class="genre" type="checkbox" id="action" name="action" value="Action">

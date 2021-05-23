@@ -66,7 +66,7 @@ def index():
             # Do the math
             algorithm.makeithappen(info)
 
-            top_matches = db.execute("SELECT title, final_score FROM movie_data ORDER BY final_score DESC LIMIT ?", info["recsvalue"])
+            top_matches = db.execute("SELECT title, final_score, imdb_id FROM movie_data ORDER BY final_score DESC LIMIT ?", info["recsvalue"])
 
             # Send whatever we need to send back as json
             return json.dumps(top_matches)
