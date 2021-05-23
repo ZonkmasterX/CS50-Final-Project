@@ -165,5 +165,10 @@ def makeithappen(info):
         # Debug message
         # logging.debug(str(popularity_mp) + " " + str(moviedata["popularity"]) + " " + str(info["popularityvalue"]))
 
+        # Updates debug table
+        db.execute("UPDATE debug SET final_score = ?, user_score = ?, user_score_p = ?, user_score_mp = ?, popularity = ? WHERE id = ?", float(final_score), moviedata["vote_average"], int(preferences["uservalue"]), float(user_score_mp), moviedata["popularity"], i)
+        db.execute("UPDATE debug SET popularity_p = ?, popularity_mp = ?, length = ?, length_p = ?, length_mp = ? WHERE id = ?", int(preferences["popularityvalue"]), float(popularity_mp), moviedata["runtime"], int(preferences["lengthvalue"]), float(length_mp), i)
+        db.execute("UPDATE debug SET genres_p = ?, genres_mp = ? WHERE id = ?", int(preferences["genrevalue"]), float(genres_mp), i)
+
         # Updates movie_scores table
         db.execute("UPDATE movie_data SET final_score = ? WHERE id = ?", float(final_score), i)
