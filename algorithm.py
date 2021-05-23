@@ -38,10 +38,12 @@ def popularityCalc(popularity, popularityvalue, medianPop, maxPop):
     B = (A - 1) * maxPop
 
     # scale it by the function
-    unscaled_mp = A * popularity / (popularity + B)
+    unscaled_mp = (A * popularity) / (popularity + B)
 
     # scale it by your preferences
     popularity_mp = (1 - popularityvalue * MAXDEDUCTIONS[0]) + popularityvalue * MAXDEDUCTIONS[0] * unscaled_mp
+
+    # logging.debug(str(popularityvalue) + " " + str(MAXDEDUCTIONS[0]) + " " + str(popularity_mp) + " " + str(unscaled_mp))
 
     return popularity_mp
 
@@ -147,7 +149,7 @@ def makeithappen(info):
 
 
         # multiplies all multipliers together to find final score
-        popularity_mp = popularityCalc(moviedata["popularity"], int(preferences["popularityvalue"]), medianPop, maxPop)
+        popularity_mp = popularityCalc(moviedata["popularity"], preferences["popularityvalue"], medianPop, maxPop)
         user_score_mp = user_scoreCalc(moviedata["vote_average"], moviedata["vote_count"], meanScore, preferences["uservalue"], coefficients)
         length_mp = lengthCalc(moviedata["runtime"], preferences["lengthvalue"], int(info["preferredlength"]))
 
@@ -163,12 +165,12 @@ def makeithappen(info):
             final_score = 1.0
 
         # Debug message
-        # logging.debug(str(popularity_mp) + " " + str(moviedata["popularity"]) + " " + str(info["popularityvalue"]))
+        #logging.debug(str(popularity_mp) + " " + str(moviedata["popularity"]) + " " + str(preferences["popularityvalue"]))
 
         # Updates debug table
-        db.execute("UPDATE debug SET final_score = ?, user_score = ?, user_score_p = ?, user_score_mp = ?, popularity = ? WHERE id = ?", float(final_score), moviedata["vote_average"], int(preferences["uservalue"]), float(user_score_mp), moviedata["popularity"], i)
-        db.execute("UPDATE debug SET popularity_p = ?, popularity_mp = ?, length = ?, length_p = ?, length_mp = ? WHERE id = ?", int(preferences["popularityvalue"]), float(popularity_mp), moviedata["runtime"], int(preferences["lengthvalue"]), float(length_mp), i)
-        db.execute("UPDATE debug SET genres_p = ?, genres_mp = ? WHERE id = ?", int(preferences["genrevalue"]), float(genres_mp), i)
+        # db.execute("UPDATE debug SET final_score = ?, user_score = ?, user_score_p = ?, user_score_mp = ?, popularity = ? WHERE id = ?", float(final_score), moviedata["vote_average"], int(preferences["uservalue"]), float(user_score_mp), moviedata["popularity"], i)
+        # db.execute("UPDATE debug SET popularity_p = ?, popularity_mp = ?, length = ?, length_p = ?, length_mp = ? WHERE id = ?", int(preferences["popularityvalue"]), float(popularity_mp), moviedata["runtime"], int(preferences["lengthvalue"]), float(length_mp), i)
+        # db.execute("UPDATE debug SET genres_p = ?, genres_mp = ? WHERE id = ?", int(preferences["genrevalue"]), float(genres_mp), i)
 
         # Updates movie_scores table
         db.execute("UPDATE movie_data SET final_score = ? WHERE id = ?", float(final_score), i)
