@@ -6,7 +6,6 @@
 
 {% block main %}
   <script>
-    //var URL = "localhost"
 
     function loadinputs() {
 
@@ -172,14 +171,15 @@
       xhr.responseType = 'text'
       xhr.setRequestHeader('Content-Type', 'application/json');
 
+      //send preferences to application.py
+      xhr.send(JSON.stringify(info))
+
       xhr.onload = function () {
         if (xhr.readyState === xhr.DONE) {
           if (xhr.status === 200) {
-            //what to do with the data once math/sql stuff is done in python
             console.log(xhr.response);
-            //console.log(xhr.responseText);
 
-            // CREATES TABLE (https://javascript.plainenglish.io/creating-a-dynamic-html-table-through-javascript-f554fba376cf)
+            // CREATES TABLE (sslightly modifies solution found here: https://javascript.plainenglish.io/creating-a-dynamic-html-table-through-javascript-f554fba376cf)
             const resultsDiv = document.querySelector("div.results") // Find the results div
             let tableHeaders = ["Title", "Percent match"]
 
@@ -212,8 +212,7 @@
 
             resultsDiv.append(resultsTable) // Appends the table to the results div
 
-            console.log("it's working")
-
+            // Receive titles and final scores from application.py
             // FORMAT: [{"title": "test", "percent": 0.78}, {ANOTHER DICT}]
             var results = xhr.response;
             results = JSON.parse(results)
@@ -224,27 +223,21 @@
               let resultsTableBodyRow = document.createElement('tr') // Create the current table row
               resultsTableBodyRow.className = 'resultsTableBodyRow'
 
-              // Creates the 2 column cells that will be appended to the current table row
-              let resultRanking = document.createElement('td')
-              resultRanking.innerText = index
+              // Creates the column cells that will be appended to the current table row
+              // let resultIndex = document.createElement('td')
+              // resultIndex.innerText = Number(index) + 1
               let resultTitle = document.createElement('td')
               resultTitle.innerText = element.title
+              let resultMatch = document.createElement('td')
+              resultMatch.className = 'percentmatch'
+              resultMatch.innerText = Number((element.final_score * 100).toFixed(2)) + "%"
 
-              resultsTableBodyRow.append(resultRanking, resultTitle) // Append the 2 cells to the table row
+              resultsTableBodyRow.append(resultTitle, resultMatch) // Append the 2 cells to the table row
               resultsTable.append(resultsTableBodyRow) // Append the current row to the scoreboard table body
             });
           }
         }
       };
-
-      //send the values (currently only ratings for simplicity but can be lots of stuff)
-      xhr.send(JSON.stringify(info))
-
-
-      //xhr.send("ratings=" + JSON.stringify(selectedRatings))
-      // xhr.send(JSON.stringify({
-      //     ratings: selectedRatings
-      // }));
     }
 
     document.addEventListener("DOMContentLoaded", loadinputs)
@@ -375,20 +368,6 @@
   </div>
 
   <!-- Movie recommendations -->
-  <div class="results" style="display: inline">
-    <!-- table with recommendations -->
-    <p id="test"></p>
-    <table>
-      <tr>
-        <th>Title</th>
-        <th>Percent match</th>
-      </tr>
-      <tr>
-        <td>The Lion, The Witch, and The Wardrobe</td>
-        <td class="percentmatch">Test 2</td>
-      </tr>
-    </table>
-
-  </div>
+  <div class="results" style="display: inline"></div>
 
 {% endblock %}
