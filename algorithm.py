@@ -137,13 +137,14 @@ def makeithappen(info):
 
         moviedata = moviedata[0]
 
-        # Filter out by release year and MPAA rating
+        # Filters by release year
         if info["minyear"]:
             if moviedata["release_year"] <= int(info["minyear"]):
                 continue
         if info["maxyear"]:
             if moviedata["release_year"] >= int(info["maxyear"]):
                 continue
+                
         # Filters out movies with ratings that were not chosen
         if moviedata["rating"] in ["G", "PG", "PG-13", "R", "NR"]: #I'm pretty sure this line can be removed since it does nothing
             if info["ratings"][moviedata["rating"]] == False:
