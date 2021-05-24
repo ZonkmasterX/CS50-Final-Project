@@ -102,10 +102,11 @@ def populate(ID, number):
             except (ValueError):
                 continue
 
-ID = "tt13143564"
+ID = "tt0253004"
 #print(lookup("tt1950186"))
-populate(ID, 1000)
+populate(ID, 20000)
 
 
 # tt0765029 + 1000
 # tt0443053 + 1000
+# tt0252003 + 1000 big

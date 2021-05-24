@@ -90,10 +90,9 @@ def genresCalc(moviegenres, preferredgenres, genrevalue):
     #determine multiplier
     if matches == 0:
         genres_mp = 1 - (MAXGENREDEDUCTION * genrevalue)
-    elif matches == len(moviegenres):
-        genres_mp = 1
     else:
         genres_mp = 1 + (MAXGENREADDITION * genrevalue * (matches - 1))
+        # If there's one match, genres_mp = 1
     return genres_mp
 
 
@@ -116,6 +115,15 @@ def makeithappen(info):
     # determine coefficients for user score function
     matrix = matrixCalc()
     coefficients = [matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0]]
+
+    # Removes genre preference weight if all genres are (not) selected
+    testAllGenres = True
+    for ele in info["genres"]:
+        if info["genres"][ele] == False:
+            testAllGenres = False
+            break
+    if testAllGenres == True:
+        info["genrevalue"] = 0
 
     #adjust preferences
     preferences = {}
@@ -144,7 +152,7 @@ def makeithappen(info):
         if info["maxyear"]:
             if moviedata["release_year"] >= int(info["maxyear"]):
                 continue
-                
+
         # Filters out movies with ratings that were not chosen
         if moviedata["rating"] in ["G", "PG", "PG-13", "R", "NR"]: #I'm pretty sure this line can be removed since it does nothing
             if info["ratings"][moviedata["rating"]] == False:
@@ -166,18 +174,17 @@ def makeithappen(info):
 
 
         # hopefully the split works properly, also formatting should match up
-        if moviedata["genres"]:
+        if moviedata["genres"] and not testAllGenres:
             genres_mp = genresCalc(moviedata["genres"].split(", "), info["genres"], preferences["genrevalue"])
         else:
             genres_mp = 1
 
         final_score = popularity_mp * user_score_mp * length_mp * genres_mp
-        if final_score > 1:
-            final_score = 1.0
+        # if final_score > 1:
+        #     final_score = 1.0
 
         # Debug message
-        if final_score == 0:
-            logging.debug(str(popularity_mp) + " " + str(user_score_mp) + " " + str(length_mp) + " " + str(genres_mp))
+        logging.debug(str(popularity_mp) + " " + str(user_score_mp) + " " + str(length_mp) + " " + str(genres_mp))
 
         # Updates debug table
         # db.execute("UPDATE debug SET final_score = ?, user_score = ?, user_score_p = ?, user_score_mp = ?, popularity = ? WHERE id = ?", float(final_score), moviedata["vote_average"], int(preferences["uservalue"]), float(user_score_mp), moviedata["popularity"], i)
