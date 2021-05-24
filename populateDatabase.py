@@ -70,12 +70,12 @@ def increment(ID):
     return newID
 
 
-def populate(number):
+def populate(ID, number):
     """populate database"""
 
     # 0499243
     # next is tt0463291
-    ID = "tt1950183"
+    # ID = "tt1950183"
     for i in range(number):
 
         # next ID
@@ -102,6 +102,10 @@ def populate(number):
             except (ValueError):
                 continue
 
-
+ID = "tt13143564"
 #print(lookup("tt1950186"))
-populate(10)
+populate(ID, 1000)
+
+
+# tt0765029 + 1000
+# tt0443053 + 1000

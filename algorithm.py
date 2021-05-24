@@ -144,9 +144,17 @@ def makeithappen(info):
         if info["maxyear"]:
             if moviedata["release_year"] >= int(info["maxyear"]):
                 continue
-        # Format should match up now, first line is to filter out NR movies and anything else weird to prevent keyerrors
-        if moviedata["rating"] in ["G", "PG", "PG-13", "R"]:
+        # Filters out movies with ratings that were not chosen
+        if moviedata["rating"] in ["G", "PG", "PG-13", "R", "NR"]: #I'm pretty sure this line can be removed since it does nothing
             if info["ratings"][moviedata["rating"]] == False:
+                continue
+        # If only one rating is selected, remove movies with no rating (not movies rated NR, movies with no rating)
+        selected = 0
+        for rating in ["G", "PG", "PG-13", "R", "NR"]:
+            if info["ratings"][rating] == True:
+                selected += 1
+        if selected == 1:
+            if moviedata["rating"] == "":
                 continue
 
 
