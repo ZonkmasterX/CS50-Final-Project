@@ -102,11 +102,45 @@ def populate(ID, number):
             except (ValueError):
                 continue
 
-ID = "tt0253004"
+
+def updatedb():
+    """updates database with current information"""
+
+    # makes list of IMDB_IDs to use from database
+    ids = []
+    imdb_ids = db.execute("SELECT imdb_id FROM movie_data")
+    for dic in imdb_ids:
+        for val in dic.values():
+            ids.append(val)
+
+    # Iterates over every ID
+    for id in ids:
+
+        # lookup movie
+        data = lookup(id)
+
+        # ensure movie is in TMDB database
+        if data != None:
+
+            # Ensure no values are None
+            for key, value in data.items():
+                if data[key] is None:
+                    data[key] = 1
+
+            # updates database with movie data
+            try:
+                db.execute("UPDATE copy SET tmdb_id = ?, title = ?, release_year = ?, runtime = ?, popularity = ?, vote_average = ?, vote_count = ?, genres = ?, rating = ? WHERE imdb_id = ?", data["tmdb_id"], data["title"], data["release_year"], data["runtime"], data["popularity"], data["vote_average"], data["vote_count"], data["genres"], data["rating"], id)
+            except (ValueError):
+                continue
+
+
+
+updatedb()
+ID = "tt0796066"
 #print(lookup("tt1950186"))
-populate(ID, 20000)
+#populate(ID, 1000)
 
 
 # tt0765029 + 1000
 # tt0443053 + 1000
-# tt0252003 + 1000 big
+# tt0252003 + 10000 big
