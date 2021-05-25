@@ -18,7 +18,8 @@ POINTX = 0.5
 POINTY = 0.5
 MINLENGTHDEV = 20
 MAXGENREDEDUCTION = 0.7
-MAXGENREADDITION = 0.07
+MAXGENREADDITION = 0.03
+MAXNONMATCHDEDUCTION = 0.01
 
 # IMPORTED PREFERENCES FROM INDEX.HTML
 
@@ -78,20 +79,23 @@ def lengthCalc(runtime, lengthvalue, preferredlength):
         return length_mp
 
 
-def genresCalc(moviegenres, preferredgenres, genrevalue):
+def genresCalc(moviegenres, preferredgenres, genrevalue, selectedGenreCount):
     matches = 0
+    nonmatches = 0
 
     # iterate over genres to see if any/how many match
     for genre in moviegenres:
         if genre in preferredgenres:
             if preferredgenres[genre] == True:
                 matches += 1
+            else:
+                nonmatches += 1
 
     #determine multiplier
     if matches == 0:
         genres_mp = 1 - (MAXGENREDEDUCTION * genrevalue)
     else:
-        genres_mp = 1 + (MAXGENREADDITION * genrevalue * (matches - 1))
+        genres_mp = 1 + (MAXGENREADDITION * genrevalue * (matches - 1)) - (MAXNONMATCHDEDUCTION * selectedGenreCount * nonmatches)
         # If there's one match, genres_mp = 1
     return genres_mp
 
@@ -117,12 +121,11 @@ def makeithappen(info):
     coefficients = [matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0]]
 
     # Removes genre preference weight if all genres are (not) selected
-    testAllGenres = True
+    selectedGenreCount = 0
     for ele in info["genres"]:
-        if info["genres"][ele] == False:
-            testAllGenres = False
-            break
-    if testAllGenres == True:
+        if info["genres"][ele] == True:
+            selectedGenreCount += 1
+    if selectedGenreCount == len(info["genres"]):
         info["genrevalue"] = 0
 
     #adjust preferences
@@ -174,8 +177,8 @@ def makeithappen(info):
 
 
         # hopefully the split works properly, also formatting should match up
-        if moviedata["genres"] and not testAllGenres:
-            genres_mp = genresCalc(moviedata["genres"].split(", "), info["genres"], preferences["genrevalue"])
+        if moviedata["genres"] and selectedGenreCount != len(info["genres"]):
+            genres_mp = genresCalc(moviedata["genres"].split(", "), info["genres"], preferences["genrevalue"], selectedGenreCount)
         else:
             genres_mp = 1
 
