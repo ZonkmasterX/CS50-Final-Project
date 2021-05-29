@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-  Movie and Show Search
+  Movie Search
 {% endblock %}
 
 {% block main %}
@@ -304,77 +304,131 @@
       MPAA Rating:
       <p class="description" style="margin-bottom: 0.4em">If you wish to select all, do not select any</p>
 
-        <label for="g"> G </label>
-        <input class="rating" type="checkbox" id="g" name="g" value="G">
+      <table class="ratingcheckboxes">
+        <tr>
+          <td class="checkbox">
+            <label for="g"> G </label>
+            <input class="rating" type="checkbox" id="g" name="g" value="G">
+          </td>
 
-        <label for="pg"> PG </label>
-        <input class="rating" type="checkbox" id="pg" name="pg" value="PG">
+          <td class="checkbox">
+            <label for="pg"> PG </label>
+            <input class="rating" type="checkbox" id="pg" name="pg" value="PG">
+          </td>
 
-        <label for="pg-13"> PG-13 </label>
-        <input class="rating" type="checkbox" id="pg-13" name="pg-13" value="PG-13">
+          <td class="checkbox">
+            <label for="pg-13"> PG-13 </label>
+            <input class="rating" type="checkbox" id="pg-13" name="pg-13" value="PG-13">
+          </td>
 
-        <label for="r"> R</label>
-        <input class="rating" type="checkbox" id="r" name="r" value="R">
+          <td class="checkbox">
+            <label for="r"> R</label>
+            <input class="rating" type="checkbox" id="r" name="r" value="R">
+          </td>
 
-        <label for="nr"> NR</label>
-        <input class="rating" type="checkbox" id="nr" name="nr" value="NR">
+          <td class="checkbox">
+            <label for="nr"> NR</label>
+            <input class="rating" type="checkbox" id="nr" name="nr" value="NR">
+          </td>
+        </tr>
+      </table>
 
         <h6>Genres:</h6>
         <p class="description" style="margin: -0.5em 0em 0.4em 0em">If you wish to select all, do not select any</p>
+        <table class="genrecheckboxes">
+          <tr>
+            <td class="checkbox">
+              <label for="action"> Action </label>
+              <input class="genre" type="checkbox" id="action" name="action" value="Action">
+            </td>
 
-          <label for="action"> Action </label>
-          <input class="genre" type="checkbox" id="action" name="action" value="Action">
+            <td class="checkbox">
+              <label for="adventure"> Adventure </label>
+              <input class="genre" type="checkbox" id="adventure" name="adventure" value="Adventure">
+            </td>
 
-          <label for="adventure"> Adventure </label>
-          <input class="genre" type="checkbox" id="adventure" name="adventure" value="Adventure">
+            <td class="checkbox">
+              <label for="animation"> Animation </label>
+              <input class="genre" type="checkbox" id="animation" name="animation" value="Animation">
+            </td>
 
-          <label for="animation"> Animation </label>
-          <input class="genre" type="checkbox" id="animation" name="animation" value="Animation">
+            <td class="checkbox">
+              <label for="comedy"> Comedy </label>
+              <input class="genre" type="checkbox" id="comedy" name="comedy" value="Comedy">
+            </td>
 
-          <label for="comedy"> Comedy </label>
-          <input class="genre" type="checkbox" id="comedy" name="comedy" value="Comedy">
+            <td class="checkbox">
+              <label for="crime"> Crime </label>
+              <input class="genre" type="checkbox" id="crime" name="crime" value="Crime">
+            </td>
 
-          <label for="crime"> Crime </label>
-          <input class="genre" type="checkbox" id="crime" name="crime" value="Crime">
+            <td class="checkbox">
+              <label for="documentary"> Documentary </label>
+              <input class="genre" type="checkbox" id="documentary" name="documentary" value="Documentary">
+            </td>
 
-          <label for="documentary"> Documentary </label>
-          <input class="genre" type="checkbox" id="documentary" name="documentary" value="Documentary">
+            <td class="checkbox">
+              <label for="drama"> Drama </label>
+              <input class="genre" type="checkbox" id="drama" name="drama" value="Drama">
+            </td>
 
-          <label for="drama"> Drama </label>
-          <input class="genre" type="checkbox" id="drama" name="drama" value="Drama">
+            <td class="checkbox">
+              <label for="family"> Family </label>
+              <input class="genre" type="checkbox" id="family" name="family" value="Family">
+            </td>
 
-          <label for="family"> Family </label>
-          <input class="genre" type="checkbox" id="family" name="family" value="Family">
+            <td class="checkbox">
+              <label for="fantasy"> Fantasy </label>
+              <input class="genre" type="checkbox" id="fantasy" name="fantasy" value="Fantasy">
+            </td>
+          </tr>
+          <tr>
+            <td class="checkbox">
+              <label for="history"> History </label>
+              <input class="genre" type="checkbox" id="history" name="history" value="History">
+            </td>
 
-          <label for="fantasy"> Fantasy </label>
-          <input class="genre" type="checkbox" id="fantasy" name="fantasy" value="Fantasy">
+            <td class="checkbox">
+              <label for="horror"> Horror </label>
+              <input class="genre" type="checkbox" id="horror" name="horror" value="Horror">
+            </td>
 
-          <label for="history"> History </label>
-          <input class="genre" type="checkbox" id="history" name="history" value="History">
+            <td class="checkbox">
+              <label for="music"> Music </label>
+              <input class="genre" type="checkbox" id="music" name="music" value="Music">
+            </td>
 
-          <label for="horror"> Horror </label>
-          <input class="genre" type="checkbox" id="horror" name="horror" value="Horror">
+            <td class="checkbox">
+              <label for="mystery"> Mystery </label>
+              <input class="genre" type="checkbox" id="mystery" name="mystery" value="Mystery">
+            </td>
 
-          <label for="music"> Music </label>
-          <input class="genre" type="checkbox" id="music" name="music" value="Music">
+            <td class="checkbox">
+              <label for="romance"> Romance </label>
+              <input class="genre" type="checkbox" id="romance" name="romance" value="Romance">
+            </td>
 
-          <label for="mystery"> Mystery </label>
-          <input class="genre" type="checkbox" id="mystery" name="mystery" value="Mystery">
+            <td class="checkbox">
+              <label for="scifi"> Science Fiction </label>
+              <input class="genre" type="checkbox" id="scifi" name="scifi" value="Science Fiction">
+            </td>
 
-          <label for="romance"> Romance </label>
-          <input class="genre" type="checkbox" id="romance" name="romance" value="Romance">
+            <td class="checkbox">
+              <label for="thriller"> Thriller </label>
+              <input class="genre" type="checkbox" id="thriller" name="thriller" value="Thriller">
+            </td>
 
-          <label for="scifi"> Science Fiction </label>
-          <input class="genre" type="checkbox" id="scifi" name="scifi" value="Science Fiction">
+            <td class="checkbox">
+              <label for="war"> War </label>
+              <input class="genre" type="checkbox" id="war" name="war" value="War">
+            </td>
 
-          <label for="thriller"> Thriller </label>
-          <input class="genre" type="checkbox" id="thriller" name="thriller" value="Thriller">
-
-          <label for="war"> War </label>
-          <input class="genre" type="checkbox" id="war" name="war" value="War">
-
-          <label for="western"> Western </label>
-          <input class="genre" type="checkbox" id="western" name="western" value="Western">
+            <td class="checkbox">
+              <label for="western"> Western </label>
+              <input class="genre" type="checkbox" id="western" name="western" value="Western">
+            </td>
+          </tr>
+        </table>
       </div>
     <br>
 

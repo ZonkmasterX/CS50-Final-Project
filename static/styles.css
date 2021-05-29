@@ -11,6 +11,24 @@ table {
   border-radius: 4px;
 }
 
+.ratingcheckboxes {
+  border-collapse: collapse;
+  border: none;
+  width: 30%;
+}
+
+.genrecheckboxes {
+  border-collapse: collapse;
+  border: none;
+  width: 100%;
+}
+
+.checkbox {
+  border-left: none;
+  border-top: none;
+  text-align: center;
+}
+
 td, th {
   border-left:solid black 1px;
   border-top:solid black 1px;
