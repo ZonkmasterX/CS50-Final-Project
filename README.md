@@ -1,5 +1,5 @@
 # CS50 Final Project: Movie recommendation system
-#### Video Demo:  <URL HERE>
+#### Video Demo:  https://youtu.be/89W0s2iMf5A
 #### Description:
     This project was completed by Liam Barthelmy and Evan Fleischer in an attempt to make
 a movie recommendation system via a web app in which the user inputs his/her preferences
@@ -72,5 +72,5 @@ paying for the IMDB API.
 The impetus for this project arose from the realization that many current recommendation
 services (Amazon, Netflix, etc) just output recommendations for the user seemingly
 magically without any user input. Thus, we thought it would be very useful to create a
-service that allows the user tight control over the results they receive and the 
+service that allows the user tight control over the results they receive and the
 preferences that led to their recommendations.
